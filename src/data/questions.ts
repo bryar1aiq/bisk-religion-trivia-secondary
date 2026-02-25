@@ -2,7 +2,7 @@
  * Islamic Quiz Contest Format
  * - Round 1: numbered questions (25)
  * - Round 2: prophet guessing with 4 hints (6)
- * - Round 3: speed round question bank (25)
+ * - Round 3: speed round question bank (24; max 12 per team)
  *
  * Note: Kurdish/Arabic translations were not provided; we return English for all languages.
  */
@@ -113,31 +113,30 @@ const ROUND2_EN: HintQuestion[] = [
 ]
 
 const ROUND3_EN: TriviaQuestion[] = [
-  { id: 1, question: 'Which Prophet was known for patience in illness?', answer: 'Ayyub' },
-  { id: 2, question: 'Which Prophet’s people were destroyed by a flood?', answer: 'Nuh' },
-  { id: 3, question: 'Which Prophet left his family in Makkah?', answer: 'Ibrahim' },
-  { id: 4, question: 'Which Prophet helped build the Kaaba with his father?', answer: 'Ismail' },
-  { id: 5, question: 'Which Prophet was ordered to sacrifice his son?', answer: 'Ibrahim' },
-  { id: 6, question: 'Who was the brother of Musa?', answer: 'Harun' },
-  { id: 7, question: 'Which tyrant opposed Musa?', answer: 'Pharaoh (Fir‘awn)' },
-  { id: 8, question: 'Which Prophet defeated Jalut?', answer: 'Dawud' },
-  { id: 9, question: 'Which Prophet was both king and Prophet after Dawud?', answer: 'Sulayman' },
-  { id: 10, question: 'Which Prophet received the Injil?', answer: 'Isa' },
-  { id: 11, question: 'Which Prophet warned against cheating in trade?', answer: 'Shu‘ayb' },
-  { id: 12, question: 'Which Prophet was raised to the heavens?', answer: 'Isa' },
-  { id: 13, question: 'Which Prophet spoke as a baby?', answer: 'Isa' },
-  { id: 14, question: 'Which Prophet had a very beautiful voice?', answer: 'Dawud' },
-  { id: 15, question: 'Which Prophet rebuilt the Kaaba?', answer: 'Ibrahim' },
-  { id: 16, question: 'What was the first mosque built in Madinah?', answer: 'Masjid Quba' },
-  { id: 17, question: 'What treaty was signed with Quraysh?', answer: 'Treaty of Hudaybiyyah' },
-  { id: 18, question: 'What is the name of the night journey?', answer: 'Isra and Mi‘raj' },
-  { id: 19, question: 'In which city did Muhammad ﷺ pass away?', answer: 'Madinah' },
-  { id: 20, question: 'What is the final book revealed?', answer: 'The Qur’an' },
-  { id: 21, question: 'What was the name of the year Muhammad ﷺ was born?', answer: 'The Year of the Elephant' },
-  { id: 22, question: 'What tribe did Muhammad ﷺ belong to?', answer: 'Quraysh' },
-  { id: 23, question: 'What was the name of the Prophet’s grandfather?', answer: 'Abdul Muttalib' },
-  { id: 24, question: 'What was the name of the Prophet’s uncle who supported him?', answer: 'Abu Talib' },
-  { id: 25, question: 'Who is the last Prophet?', answer: 'Muhammad ﷺ' },
+  { id: 1, question: 'What was the name of the idol especially worshipped by the people of Prophet Nuh عليه السلام mentioned first in Surah Nuh (71:23)?', answer: 'Wadd' },
+  { id: 2, question: 'Who made the calf for the people of Prophet Musa عليه السلام?', answer: 'Samiri' },
+  { id: 3, question: 'What was the name of the well into which Prophet Yusuf عليه السلام was thrown (according to classical reports)?', answer: 'Ghayabah' },
+  { id: 4, question: 'On which mountain did the Ark of Prophet Nuh عليه السلام rest?', answer: 'Judi' },
+  { id: 5, question: 'What was the name of the town destroyed along with the people of Prophet Lut عليه السلام?', answer: 'Sodom' },
+  { id: 6, question: 'What was the name of the righteous servant who met Prophet Musa عليه السلام (Surah Al-Kahf)?', answer: 'Khidr' },
+  { id: 7, question: 'What was the name of the king who argued about Lordship with Prophet Ibrahim عليه السلام?', answer: 'Namrud' },
+  { id: 8, question: 'What was the name of the queen who met Prophet Sulayman عليه السلام?', answer: 'Bilqis' },
+  { id: 9, question: 'What was the name of the father of Prophet Ibrahim عليه السلام as mentioned in the Qur’an?', answer: 'Azar' },
+  { id: 10, question: 'What was the name of the valley where Prophet Ibrahim عليه السلام left Hajar and Isma‘il?', answer: 'Bakkah' },
+  { id: 11, question: 'What was the occupation of the prison companion of Prophet Yusuf عليه السلام who was executed?', answer: 'Baker' },
+  { id: 12, question: 'What was the title of the tyrant ruler pursuing Prophet Musa عليه السلام?', answer: 'Firawn' },
+  { id: 13, question: 'What was the name of the brother who assisted Prophet Musa عليه السلام?', answer: 'Harun' },
+  { id: 14, question: 'What was the name of the son of Prophet Nuh عليه السلام who refused to board the Ark (according to tafsir)?', answer: 'Kan‘an' },
+  { id: 15, question: 'What was the name of the mosque mentioned in the Night Journey of Prophet Muhammad ﷺ?', answer: 'Aqsa' },
+  { id: 16, question: 'What was the name of the book revealed to Prophet Dawud عليه السلام?', answer: 'Zabur' },
+  { id: 17, question: 'What was the name of the she-camel sent as a sign to the people of Prophet Salih عليه السلام?', answer: 'Naqah' },
+  { id: 18, question: 'What was the name of the angel who brought revelation to Prophet Muhammad ﷺ?', answer: 'Jibril' },
+  { id: 19, question: 'What was the name of the mother of Prophet Isa عليه السلام?', answer: 'Maryam' },
+  { id: 20, question: 'What was the name of the tribe to which Prophet Hud عليه السلام was sent?', answer: "'Ad" },
+  { id: 21, question: 'What was the name of the tribe to which Prophet Salih عليه السلام was sent?', answer: 'Thamud' },
+  { id: 22, question: 'What was the name of the father of Prophet Yahya عليه السلام?', answer: 'Zakariyya' },
+  { id: 23, question: 'What was the name of the mountain where Prophet Musa عليه السلام received the Torah?', answer: 'Tur' },
+  { id: 24, question: 'Which prophet hosted the angels before they went to the people of Prophet Lut عليه السلام?', answer: 'Ibrahim' },
 ]
 
 export function getRound1Questions(_lang: Language): TriviaQuestion[] {
