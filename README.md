@@ -21,11 +21,16 @@ npm run build
 
 ## Host on GitHub Pages (free)
 
-1. Push the latest code (including the `.github/workflows/deploy-pages.yml` file).
-2. On GitHub: open your repo → **Settings** → **Pages**.
-3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-4. After the next push to `main`, the workflow will build and deploy. Your site will be at:
+1. On GitHub open your repo: **https://github.com/bryar1aiq/bisk-religion-trivia-secondary**
+2. Go to **Settings** → **Pages** (left sidebar).
+3. Under **Build and deployment**, set **Source** to **GitHub Actions** (not “Deploy from a branch”). Save.
+4. Go to the **Actions** tab. You should see the “Deploy to GitHub Pages” workflow. Either:
+   - Click **Run workflow** → **Run workflow** to deploy now, or
+   - Push a new commit to `main` to trigger it.
+5. Wait 1–2 minutes. When the workflow run is green (✓), the site will be at:
    **https://bryar1aiq.github.io/bisk-religion-trivia-secondary/**
+
+**Still 404?** Make sure in **Settings → Pages** the source is **GitHub Actions**. If it’s set to “Deploy from a branch”, the site won’t use the workflow and you’ll get 404.
 
 ## Other free hosting
 
