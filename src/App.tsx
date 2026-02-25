@@ -453,130 +453,147 @@ function App() {
                     ? 'Final: 60 seconds — answer up to 12 questions.'
                     : 'Results'}
         </p>
-        <div className="flex flex-col items-center gap-3 mt-5">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full max-w-4xl">
-            {teams.map((t, idx) => (
-              <div
-                key={t.id}
-                className={`rounded-2xl border-2 px-4 py-3 text-left text-islamic-text-on-light ${
-                  (phase === 'final' || phase === 'done'
-                    ? qualifiers[finalTurnIdx]?.id === t.id
-                    : idx === activeTeamIdx)
-                    ? 'border-islamic-accent bg-islamic-card/90'
-                    : 'border-islamic-cell-border bg-islamic-card/60'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="font-semibold truncate">{t.name}</div>
-                    <div className="mt-1 text-xs text-islamic-text-on-light/70">
-                      R1: {t.r1Answered}/{round1Target} • R2: {t.r2Answered}/2
+        <div className="flex flex-col items-center gap-4 mt-6 w-full max-w-4xl mx-auto px-1">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full">
+            {teams.map((t, idx) => {
+              const isActive =
+                phase === 'final' || phase === 'done'
+                  ? qualifiers[finalTurnIdx]?.id === t.id
+                  : idx === activeTeamIdx
+              const isEliminated = (phase === 'final' || phase === 'done') && finalQualifiedIds && !finalQualifiedIds.includes(t.id)
+              const canSelect =
+                !isEliminated &&
+                (phase === 'final' || phase === 'done'
+                  ? qualifiers.some((q) => q.id === t.id) && !isActive
+                  : !isActive)
+
+              const content = (
+                <>
+                  <div className="min-w-0 text-center sm:text-left">
+                    <div className="font-bold text-base sm:text-lg truncate text-islamic-text-on-light">{t.name}</div>
+                    <div className="mt-0.5 text-[10px] sm:text-xs text-islamic-text-on-light/60">
+                      R1 {t.r1Answered}/{round1Target} · R2 {t.r2Answered}/2
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="inline-flex items-center gap-2 rounded-xl bg-islamic-accent px-3 py-1.5 shadow-sm border border-black/10">
-                      <span className="text-[11px] font-semibold text-islamic-bg/90">Points</span>
-                      <span className="text-xl font-extrabold text-islamic-bg leading-none tabular-nums min-w-[2.5rem] text-center">
-                        {t.score}
-                      </span>
-                    </div>
-                    {phase === 'final' || phase === 'done'
-                      ? finalQualifiedIds && !finalQualifiedIds.includes(t.id)
-                        ? (
-                          <span className="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-black/25 text-islamic-heading/90">
-                            Eliminated
-                          </span>
-                          )
-                        : qualifiers[finalTurnIdx]?.id === t.id
-                          ? (
-                            <span className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold bg-islamic-cell text-white shadow-md border border-islamic-cell-border">
-                              <span className="text-base">✓</span>
-                              Final turn
-                            </span>
-                            )
-                          : (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const qi = qualifiers.findIndex((q) => q.id === t.id)
-                                if (qi === 0 || qi === 1) setFinalTurnIdx(qi as 0 | 1)
-                              }}
-                              className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold bg-islamic-accent text-islamic-bg border-2 border-islamic-khaki-dark/50 shadow-md hover:brightness-110 active:scale-[0.98] transition-all"
-                            >
-                              <span className="text-base">●</span>
-                              Make active
-                            </button>
-                            )
-                      : idx === activeTeamIdx
-                        ? (
-                          <span className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold bg-islamic-cell text-white shadow-md border border-islamic-cell-border">
-                            <span className="text-base">✓</span>
-                            Selected
-                          </span>
-                          )
-                        : (
-                          <button
-                            type="button"
-                            onClick={() => setActiveTeamIdx(idx)}
-                            className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold bg-islamic-accent text-islamic-bg border-2 border-islamic-khaki-dark/50 shadow-md hover:brightness-110 active:scale-[0.98] transition-all"
-                          >
-                            <span className="text-base">●</span>
-                            Select team
-                          </button>
-                          )}
+                  <div className="text-2xl sm:text-3xl font-extrabold tabular-nums text-islamic-accent mt-1 sm:mt-0">
+                    {t.score}
                   </div>
+                  {isActive && (
+                    <div className="col-span-full text-[10px] sm:text-xs font-semibold text-islamic-accent uppercase tracking-wide mt-1">
+                      {phase === 'final' || phase === 'done' ? 'Playing now' : 'Selected'}
+                    </div>
+                  )}
+                  {isEliminated && (
+                    <div className="col-span-full text-[10px] sm:text-xs text-islamic-text-on-light/50 mt-1">
+                      Out
+                    </div>
+                  )}
+                  {canSelect && (
+                    <div className="col-span-full text-[10px] sm:text-xs text-islamic-text-on-light/60 mt-1">
+                      Tap to select
+                    </div>
+                  )}
+                </>
+              )
+
+              const sharedClasses = `rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col items-center sm:items-start transition-all duration-200 ${
+                isEliminated
+                  ? 'opacity-60 bg-islamic-card/50 border border-islamic-cell-border/50'
+                  : isActive
+                    ? 'bg-islamic-card border-2 border-islamic-accent'
+                    : 'bg-islamic-card/90 border border-islamic-cell-border hover:border-islamic-accent/70 hover:bg-islamic-card'
+              }`
+
+              if (canSelect) {
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => {
+                      if (phase === 'final' || phase === 'done') {
+                        const qi = qualifiers.findIndex((q) => q.id === t.id)
+                        if (qi === 0 || qi === 1) setFinalTurnIdx(qi as 0 | 1)
+                      } else {
+                        setActiveTeamIdx(idx)
+                      }
+                    }}
+                    className={`${sharedClasses} cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-islamic-accent text-left w-full`}
+                  >
+                    {content}
+                  </button>
+                )
+              }
+              return (
+                <div key={t.id} className={`${sharedClasses} cursor-default`}>
+                  {content}
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={resetAll}
-              className="text-sm font-medium text-islamic-muted hover:text-islamic-heading underline underline-offset-2 transition-colors"
-            >
-              Reset contest
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={resetAll}
+            className="text-sm text-islamic-muted hover:text-islamic-heading underline underline-offset-2 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-islamic-accent rounded"
+          >
+            Reset contest
+          </button>
         </div>
       </header>
 
       <main className="relative z-10 w-full flex-1 flex flex-col items-center px-3 sm:px-6 pb-10">
         {phase === 'setup' && (
           <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-islamic-card/90 text-islamic-text-on-light border-2 border-islamic-cell-border rounded-2xl p-5 sm:p-6">
-              <div className="flex flex-col gap-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="bg-islamic-card text-islamic-text-on-light border-2 border-islamic-cell-border rounded-3xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-islamic-cell/80 to-islamic-cell-border/60 px-5 sm:px-8 py-4 border-b border-islamic-cell-border">
+                <h2 className="font-heading m-0 text-xl sm:text-2xl font-bold text-islamic-heading">
+                  Name your teams
+                </h2>
+                <p className="font-sans m-0 mt-1 text-sm text-islamic-heading/80">
+                  Enter a name for each team, then start the contest.
+                </p>
+              </div>
+              <div className="p-5 sm:p-8 flex flex-col gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
                   {teams.map((t, idx) => (
-                    <label key={t.id} className="block">
-                      <span className="block text-sm font-semibold mb-1">Team {idx + 1} name</span>
+                    <label
+                      key={t.id}
+                      className="block rounded-2xl border-2 border-islamic-cell-border bg-white/60 p-4 sm:p-5 hover:border-islamic-accent/50 hover:bg-white/80 transition-all focus-within:ring-2 focus-within:ring-islamic-accent focus-within:border-islamic-accent"
+                    >
+                      <span className="flex items-center gap-2 text-sm font-bold text-islamic-text-on-light mb-2">
+                        <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-islamic-accent text-islamic-bg text-sm font-extrabold">
+                          {idx + 1}
+                        </span>
+                        Team {idx + 1}
+                      </span>
                       <input
+                        type="text"
                         value={t.name}
                         onChange={(e) => {
                           const v = e.target.value
                           setTeams((prev) => prev.map((x) => (x.id === t.id ? { ...x, name: v } : x)))
                         }}
-                        className="w-full px-3 py-2 rounded-xl bg-white text-black border-2 border-black/15 focus:outline-none focus:ring-2 focus:ring-islamic-accent"
+                        placeholder={`e.g. Team ${idx + 1}`}
+                        className="w-full px-4 py-3 rounded-xl bg-white text-black border-2 border-black/10 focus:outline-none focus:ring-2 focus:ring-islamic-accent focus:border-islamic-accent placeholder:text-black/40 font-medium"
                       />
                     </label>
                   ))}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-sm font-semibold">Round 1 questions per team: 8</span>
-                  <span className="text-sm text-islamic-text-on-light/75">(each correct = {POINTS_PER_CORRECT} points)</span>
+                <div className="rounded-xl bg-islamic-cell/20 border border-islamic-cell-border/50 px-4 py-3 flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-semibold text-islamic-text-on-light">Round 1:</span>
+                  <span className="text-sm text-islamic-text-on-light/90">8 questions per team</span>
+                  <span className="text-islamic-text-on-light/60">•</span>
+                  <span className="text-sm text-islamic-text-on-light/90">{POINTS_PER_CORRECT} points per correct answer</span>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setPhase('round1')}
-                    className="flex-1 py-3 px-5 rounded-xl font-semibold bg-islamic-accent text-islamic-card hover:bg-islamic-accent/90 active:scale-[0.99] transition-all"
-                  >
-                    Start Round 1
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setPhase('round1')}
+                  className="w-full py-4 px-6 rounded-2xl font-bold text-lg bg-islamic-accent text-islamic-bg border-2 border-islamic-khaki-dark/40 shadow-lg hover:brightness-110 active:scale-[0.99] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-islamic-accent"
+                >
+                  Start Round 1
+                </button>
               </div>
             </div>
           </div>
@@ -600,9 +617,9 @@ function App() {
                 <button
                   type="button"
                   onClick={() => setPhase('round2')}
-                  className="py-2.5 px-5 rounded-xl font-semibold border-2 border-islamic-accent text-islamic-accent bg-transparent hover:bg-islamic-accent/10 transition-all"
+                  className="py-2 px-4 rounded-lg text-sm font-medium text-islamic-accent border border-islamic-accent/60 bg-islamic-accent/5 hover:bg-islamic-accent/10 hover:border-islamic-accent/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-islamic-accent"
                 >
-                  Go to Round 2
+                  Go to Round 2 →
                 </button>
               )}
             </div>
@@ -645,10 +662,10 @@ function App() {
 
         {phase === 'round2' && (
           <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-islamic-card/90 text-islamic-text-on-light border-2 border-islamic-cell-border rounded-2xl p-5 sm:p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="text-sm text-islamic-text-on-light/75">
-                  Used: <span className="font-semibold text-islamic-accent">{usedR2.size}</span> / {round2.length}
+            <div className="bg-islamic-card/95 text-islamic-text-on-light border border-islamic-cell-border/80 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-4 sm:px-6 py-4 border-b border-islamic-cell-border/50 flex flex-wrap items-center justify-between gap-3">
+                <div className="text-sm text-islamic-text-on-light/70">
+                  Hints used <span className="font-semibold text-islamic-text-on-light">{usedR2.size}</span>/<span className="text-islamic-text-on-light/80">{round2.length}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   {r2Done && (
@@ -664,42 +681,47 @@ function App() {
                           setPhase('final')
                         }
                       }}
-                      className="py-2.5 px-5 rounded-xl font-semibold border-2 border-islamic-accent text-islamic-accent bg-transparent hover:bg-islamic-accent/10 transition-all"
+                      className="py-2 px-4 rounded-lg text-sm font-medium text-islamic-accent border border-islamic-accent/60 bg-islamic-accent/5 hover:bg-islamic-accent/10 hover:border-islamic-accent/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-islamic-accent"
                     >
-                      Go to Final (Top 2)
+                      Go to Final (Top 2) →
                     </button>
                   )}
                 </div>
               </div>
 
-              <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {teams.map((t, idx) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => startNextR2ForTeam(idx)}
-                    disabled={t.r2Answered >= 2}
-                    className={`rounded-2xl border-2 px-4 py-4 text-left transition-all ${
-                      idx === activeTeamIdx
-                        ? 'border-islamic-accent bg-islamic-accent/10'
-                        : 'border-islamic-cell-border bg-transparent hover:bg-black/5'
-                    } ${t.r2Answered >= 2 ? 'opacity-60 cursor-not-allowed' : ''}`}
-                  >
-                    <div className="font-semibold">{t.name}</div>
-                    <div className="text-sm text-islamic-text-on-light/75 mt-1">
-                      Round 2: {t.r2Answered}/2
-                    </div>
-                    <div className="text-sm text-islamic-text-on-light/75 mt-3">Start next hints question</div>
-                  </button>
-                ))}
+              <div className="p-4 sm:p-6">
+                <p className="text-xs sm:text-sm text-islamic-text-on-light/60 mb-4">Pick a team to start their hints question (2 per team).</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {teams.map((t, idx) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => startNextR2ForTeam(idx)}
+                      disabled={t.r2Answered >= 2}
+                      className={`rounded-xl border px-4 py-4 text-left transition-all ${
+                        idx === activeTeamIdx
+                          ? 'border-islamic-accent bg-islamic-accent/10 text-islamic-text-on-light'
+                          : 'border-islamic-cell-border/70 bg-white/50 hover:bg-white/80 hover:border-islamic-accent/50'
+                      } ${t.r2Answered >= 2 ? 'opacity-55 cursor-not-allowed' : ''}`}
+                    >
+                      <div className="font-semibold text-islamic-text-on-light">{t.name}</div>
+                      <div className="text-xs text-islamic-text-on-light/60 mt-1">
+                        {t.r2Answered}/2 questions
+                      </div>
+                      {t.r2Answered < 2 && (
+                        <div className="text-xs text-islamic-accent mt-2 font-medium">Start hints →</div>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {r2Selected && (
-                <div className="mt-6 rounded-2xl border-2 border-islamic-cell-border bg-white/80 p-5">
-                  <div className="flex items-center justify-between gap-3">
+                <div className="mx-4 sm:mx-6 mb-6 rounded-xl border border-islamic-cell-border/70 bg-white/90 p-4 sm:p-5 shadow-sm">
+                  <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="text-sm font-semibold text-black/75">Round 2 • Team: {activeTeam?.name}</div>
-                      <div className="text-lg font-bold text-black/90 mt-1">Who is he?</div>
+                      <div className="text-xs text-islamic-text-on-light/60">Team: {activeTeam?.name}</div>
+                      <div className="text-lg font-semibold text-islamic-text-on-light mt-0.5">Who is he?</div>
                     </div>
                     <button
                       type="button"
@@ -708,54 +730,58 @@ function App() {
                         setR2HintStep(0)
                         setShowingAnswer(false)
                       }}
-                      className="px-3 py-2 rounded-xl bg-black/10 text-black/70 hover:bg-black/15 transition-colors"
+                      className="shrink-0 p-2 rounded-lg text-islamic-text-on-light/70 hover:bg-black/5 hover:text-islamic-text-on-light transition-colors"
+                      aria-label="Close"
                     >
-                      Close
+                      ✕
                     </button>
                   </div>
 
-                  <div className="mt-4 space-y-2">
+                  <div className="mt-4 space-y-2.5">
                     {r2Selected.hints.slice(0, r2HintStep + 1).map((h, i) => (
-                      <div key={i} className="text-base text-black/90">
-                        <span className="font-semibold">Hint {i + 1}:</span> {h}
+                      <div key={i} className="text-sm text-islamic-text-on-light/90 pl-1">
+                        <span className="font-medium text-islamic-text-on-light/70">Hint {i + 1}</span>
+                        <span className="ml-2">{h}</span>
                       </div>
                     ))}
                   </div>
 
                   {showingAnswer && (
-                    <div className="mt-4 text-xl font-bold text-islamic-accent">Answer: {r2Selected.answer}</div>
+                    <div className="mt-4 pt-4 border-t border-islamic-cell-border/50 text-base font-semibold text-islamic-accent">
+                      Answer: {r2Selected.answer}
+                    </div>
                   )}
 
-                  <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                  <div className="mt-5 flex flex-col sm:flex-row gap-2">
                     <button
                       type="button"
                       onClick={() => setR2HintStep((s) => clampInt(s + 1, 0, 3))}
                       disabled={r2HintStep >= 3}
-                      className="flex-1 py-3 px-5 rounded-xl font-semibold border-2 border-islamic-accent text-islamic-accent bg-transparent hover:bg-islamic-accent/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                      className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium border border-islamic-accent/60 text-islamic-accent bg-islamic-accent/5 hover:bg-islamic-accent/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       Next hint
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowingAnswer(true)}
-                      className="flex-1 py-3 px-5 rounded-xl font-semibold bg-islamic-accent text-islamic-card hover:bg-islamic-accent/90 active:scale-[0.99] transition-all"
+                      className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium bg-islamic-accent/90 text-islamic-bg hover:bg-islamic-accent transition-colors"
                     >
                       Reveal answer
                     </button>
                   </div>
 
-                  <div className="mt-3 flex flex-col sm:flex-row gap-3">
+                  <div className="mt-3 flex flex-col sm:flex-row gap-2">
                     <button
                       type="button"
                       onClick={() => markR2Answer(true)}
-                      className="flex-1 py-3 px-5 rounded-xl font-semibold bg-emerald-600 text-white hover:bg-emerald-700 transition-all"
+                      className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium bg-emerald-500/90 text-white hover:bg-emerald-600 transition-colors"
                     >
                       Correct (+{POINTS_PER_CORRECT})
                     </button>
                     <button
                       type="button"
                       onClick={() => markR2Answer(false)}
-                      className="flex-1 py-3 px-5 rounded-xl font-semibold bg-rose-600 text-white hover:bg-rose-700 transition-all"
+                      className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium bg-rose-500/90 text-white hover:bg-rose-600 transition-colors"
                     >
                       Wrong (0)
                     </button>
@@ -768,101 +794,107 @@ function App() {
 
         {phase === 'tiebreak' && (
           <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-islamic-card/90 text-islamic-text-on-light border-2 border-islamic-cell-border rounded-2xl p-5 sm:p-6">
-              <p className="text-base font-semibold text-islamic-text-on-light mb-1">
-                Scores are tied. Choose which team to eliminate from the final round.
-              </p>
-              <p className="text-sm text-islamic-text-on-light/75 mb-6">
-                The other two teams will go through to the speed round.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-                {teams.map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => setTiebreakEliminatedId((id) => (id === t.id ? null : t.id))}
-                    className={`rounded-2xl border-2 px-4 py-4 text-left transition-all ${
-                      tiebreakEliminatedId === t.id
-                        ? 'border-rose-500 bg-rose-500/20 ring-2 ring-rose-400'
-                        : 'border-islamic-cell-border bg-white/80 hover:border-islamic-accent/50 hover:bg-islamic-accent/5'
-                    }`}
-                  >
-                    <div className="font-bold text-islamic-text-on-light">{t.name}</div>
-                    <div className="text-sm text-islamic-text-on-light/75 mt-1">
-                      Score: <span className="font-semibold text-islamic-accent">{t.score}</span>
-                    </div>
-                    <div className="mt-3 text-sm font-semibold">
-                      {tiebreakEliminatedId === t.id ? '✓ Eliminated (click to undo)' : 'Click to eliminate'}
-                    </div>
-                  </button>
-                ))}
+            <div className="bg-islamic-card/95 text-islamic-text-on-light border border-islamic-cell-border/80 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-4 sm:px-6 py-4 border-b border-islamic-cell-border/50">
+                <h2 className="font-heading m-0 text-lg sm:text-xl font-bold text-islamic-text-on-light">
+                  Scores are tied
+                </h2>
+                <p className="text-sm text-islamic-text-on-light/70 mt-1">
+                  Tap one team to eliminate. The other two will go to the final.
+                </p>
               </div>
-              <button
-                type="button"
-                disabled={!tiebreakEliminatedId}
-                onClick={() => {
-                  if (!tiebreakEliminatedId) return
-                  const qualified = teams.filter((t) => t.id !== tiebreakEliminatedId).map((t) => t.id)
-                  setFinalQualifiedIds(qualified)
-                  setTiebreakEliminatedId(null)
-                  setPhase('final')
-                }}
-                className="w-full sm:w-auto py-3 px-6 rounded-xl font-bold bg-islamic-accent text-islamic-bg border-2 border-islamic-khaki-dark/50 shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 transition-all"
-              >
-                Confirm: these 2 go to final
-              </button>
+              <div className="p-4 sm:p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                  {teams.map((t) => {
+                    const isEliminated = tiebreakEliminatedId === t.id
+                    return (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setTiebreakEliminatedId((id) => (id === t.id ? null : t.id))}
+                        className={`rounded-xl border px-4 py-4 text-left transition-all ${
+                          isEliminated
+                            ? 'border-rose-400/70 bg-rose-50/80 text-islamic-text-on-light'
+                            : 'border-islamic-cell-border/70 bg-white/60 hover:bg-white/90 hover:border-islamic-accent/50'
+                        } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-islamic-accent`}
+                      >
+                        <div className="font-semibold text-islamic-text-on-light">{t.name}</div>
+                        <div className="text-sm text-islamic-text-on-light/60 mt-1">
+                          <span className="font-medium text-islamic-accent">{t.score}</span> pts
+                        </div>
+                        <div className="mt-3 text-xs font-medium text-islamic-text-on-light/70">
+                          {isEliminated ? '✓ Eliminated · tap to undo' : 'Tap to eliminate'}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+                <button
+                  type="button"
+                  disabled={!tiebreakEliminatedId}
+                  onClick={() => {
+                    if (!tiebreakEliminatedId) return
+                    const qualified = teams.filter((t) => t.id !== tiebreakEliminatedId).map((t) => t.id)
+                    setFinalQualifiedIds(qualified)
+                    setTiebreakEliminatedId(null)
+                    setPhase('final')
+                  }}
+                  className="w-full sm:w-auto py-2.5 px-5 rounded-lg text-sm font-medium text-islamic-accent border border-islamic-accent/60 bg-islamic-accent/5 hover:bg-islamic-accent/10 hover:border-islamic-accent/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-islamic-accent"
+                >
+                  Confirm & go to final →
+                </button>
+              </div>
             </div>
           </div>
         )}
 
         {phase === 'final' && (
           <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-islamic-card/90 text-islamic-text-on-light border-2 border-islamic-cell-border rounded-2xl p-5 sm:p-6">
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <div className="text-sm text-islamic-text-on-light/75">Qualified teams (Top 2 after Rounds 1 & 2)</div>
-                    <div className="text-lg font-bold mt-1">
-                      {qualifiers[0]?.name} vs {qualifiers[1]?.name}
-                    </div>
-                    {eliminatedTeams.length > 0 && (
-                      <div className="mt-1 text-xs text-islamic-text-on-light/70">
-                        Eliminated: {eliminatedTeams.map((t) => t.name).join(', ')}
-                      </div>
-                    )}
+            <div className="bg-islamic-card/95 text-islamic-text-on-light border border-islamic-cell-border/80 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-4 sm:px-6 py-4 border-b border-islamic-cell-border/50 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs text-islamic-text-on-light/60">Final · Top 2</div>
+                  <div className="text-base sm:text-lg font-semibold text-islamic-text-on-light mt-0.5">
+                    {qualifiers[0]?.name} vs {qualifiers[1]?.name}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setPhase('done')}
-                    className="py-2.5 px-5 rounded-xl font-semibold border-2 border-islamic-accent text-islamic-accent bg-transparent hover:bg-islamic-accent/10 transition-all"
-                  >
-                    Finish & show results
-                  </button>
+                  {eliminatedTeams.length > 0 && (
+                    <div className="text-xs text-islamic-text-on-light/50 mt-0.5">
+                      Out: {eliminatedTeams.map((t) => t.name).join(', ')}
+                    </div>
+                  )}
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setPhase('done')}
+                  className="py-2 px-4 rounded-lg text-sm font-medium text-islamic-accent border border-islamic-accent/60 bg-islamic-accent/5 hover:bg-islamic-accent/10 hover:border-islamic-accent/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-islamic-accent"
+                >
+                  Finish & show results →
+                </button>
+              </div>
 
-                <div className="rounded-2xl border-2 border-islamic-cell-border bg-white/80 p-5">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="p-4 sm:p-6">
+                <div className="rounded-xl border border-islamic-cell-border/70 bg-white/90 p-4 sm:p-5 shadow-sm">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
-                      <div className="text-sm font-semibold text-black/75">Speed round turn</div>
-                      <div className="text-2xl font-bold text-black/90 mt-1">{finalActiveTeam?.name ?? '(No team)'}</div>
-                      <div className="text-sm text-black/75 mt-2">
-                        Time: <span className="font-semibold text-islamic-accent">{finalSecondsLeft}s</span> • Questions: {finalAskedCount}/{FINAL_MAX_QUESTIONS}
+                      <div className="text-xs text-islamic-text-on-light/60">Speed round</div>
+                      <div className="text-xl font-semibold text-islamic-text-on-light mt-0.5">{finalActiveTeam?.name ?? '—'}</div>
+                      <div className="text-xs text-islamic-text-on-light/60 mt-1">
+                        Questions {finalAskedCount}/{FINAL_MAX_QUESTIONS}
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setFinalTurnIdx((i) => (i === 0 ? 1 : 0))}
-                        disabled={finalRunning}
-                        className="px-3 py-2 rounded-xl border-2 border-islamic-accent text-islamic-accent bg-transparent hover:bg-islamic-accent/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                      >
-                        Switch team
-                      </button>
+                    <div className="flex flex-col items-center min-w-[5.5rem] py-2 px-3 rounded-xl bg-islamic-cell/80 border border-islamic-cell-border/80">
+                      <div className="text-[10px] font-medium text-islamic-heading/70 uppercase tracking-wide">Time</div>
+                      <div className="text-4xl sm:text-5xl font-extrabold text-islamic-heading tabular-nums leading-none mt-0.5">
+                        {finalSecondsLeft}
+                      </div>
+                      <div className="text-xs text-islamic-accent font-medium">sec</div>
+                    </div>
+                    <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={startFinalTurn}
                         disabled={finalRunning || !finalActiveTeam}
-                        className="px-4 py-2.5 rounded-xl font-semibold bg-islamic-accent text-islamic-card hover:bg-islamic-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        className="py-2 px-4 rounded-lg text-sm font-medium bg-islamic-accent text-islamic-bg hover:bg-islamic-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         {finalRunning ? 'Running…' : 'Start 60s'}
                       </button>
@@ -870,20 +902,20 @@ function App() {
                   </div>
 
                   {finalCurrentQuestion && (
-                    <div className="mt-5">
-                      <div className="text-sm font-semibold text-black/75 mb-2">Question</div>
-                      <div className="text-xl font-semibold text-black/90">{finalCurrentQuestion.question}</div>
+                    <div className="mt-5 pt-5 border-t border-islamic-cell-border/50">
+                      <div className="text-xs text-islamic-text-on-light/60 mb-1">Question</div>
+                      <div className="text-base sm:text-lg font-semibold text-islamic-text-on-light">{finalCurrentQuestion.question}</div>
 
                       {showingAnswer && (
-                        <div className="mt-3 text-xl font-bold text-islamic-accent">Answer: {finalCurrentQuestion.answer}</div>
+                        <div className="mt-3 text-base font-semibold text-islamic-accent">Answer: {finalCurrentQuestion.answer}</div>
                       )}
 
-                      <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                      <div className="mt-4 flex flex-col sm:flex-row gap-2">
                         <button
                           type="button"
                           onClick={() => setShowingAnswer(true)}
                           disabled={!finalRunning}
-                          className="flex-1 py-3 px-5 rounded-xl font-semibold border-2 border-islamic-accent text-islamic-accent bg-transparent hover:bg-islamic-accent/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                          className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium border border-islamic-accent/60 text-islamic-accent bg-islamic-accent/5 hover:bg-islamic-accent/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                           Reveal answer
                         </button>
@@ -891,7 +923,7 @@ function App() {
                           type="button"
                           onClick={() => markFinalAnswer(true)}
                           disabled={!finalRunning}
-                          className="flex-1 py-3 px-5 rounded-xl font-semibold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                          className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium bg-emerald-500/90 text-white hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                           Correct (+{POINTS_PER_CORRECT})
                         </button>
@@ -899,20 +931,20 @@ function App() {
                           type="button"
                           onClick={nextFinalQuestion}
                           disabled={!finalRunning}
-                          className="flex-1 py-3 px-5 rounded-xl font-semibold bg-black/15 text-black/80 hover:bg-black/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                          className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium bg-white border border-islamic-cell-border/70 text-islamic-text-on-light hover:bg-black/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                           Next question
                         </button>
                       </div>
 
-                      <div className="mt-4 flex justify-end">
+                      <div className="mt-3 flex justify-end">
                         <button
                           type="button"
                           onClick={() => {
                             setFinalRunning(false)
                             setShowingAnswer(false)
                           }}
-                          className="text-sm font-medium text-islamic-muted hover:text-islamic-heading underline underline-offset-2 transition-colors"
+                          className="text-xs font-medium text-islamic-text-on-light/60 hover:text-islamic-text-on-light underline underline-offset-1 transition-colors"
                         >
                           Stop timer
                         </button>
