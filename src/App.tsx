@@ -9,7 +9,7 @@ import {
 } from './data/questions'
 import { SpinningWheel } from './components/SpinningWheel'
 
-const LOGO_URL = '/bisk-logo.png'
+const LOGO_URL = `${import.meta.env.BASE_URL}bisk-logo.png`
 const POINTS_PER_CORRECT = 10
 const FINAL_SECONDS = 60
 const FINAL_MAX_QUESTIONS = 12
