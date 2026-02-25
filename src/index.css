@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  /* Islamic palette: deep green + khaki */
+  --color-islamic-bg: #0d3328;
+  --color-islamic-bg-subtle: #0f3d2f;
+  --color-islamic-heading: #e8e0c8;
+  --color-islamic-muted: #b5a88a;
+  --color-islamic-khaki: #c3b091;
+  --color-islamic-khaki-light: #e2d9c4;
+  --color-islamic-khaki-dark: #9a8b6a;
+  --color-islamic-accent: #c9a227;
+  --color-islamic-cell: #1a4d3e;
+  --color-islamic-cell-border: #2d6b56;
+  --color-islamic-cell-hover: #256b52;
+  --color-islamic-card: #e8e0c8;
+  --color-islamic-card-border: #9a8b6a;
+  --color-islamic-text-on-light: #1a3028;
+
+  /* Fonts */
+  --font-heading: Amiri, Georgia, serif;
+  --font-sans: Cairo, "Segoe UI", system-ui, sans-serif;
+
+  /* Animations */
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-slide-up: slide-up 0.3s ease-out;
+
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    0% { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer base {
+  body {
+    @apply min-h-screen min-w-[320px] m-0 text-islamic-heading bg-islamic-bg antialiased font-sans;
+    line-height: 1.6;
+  }
+  #root {
+    @apply min-h-screen;
+  }
+}
