@@ -19,4 +19,15 @@ npm run dev
 npm run build
 ```
 
-The built site is in the `dist` folder and can be hosted on GitHub Pages, Netlify, Vercel, or Cloudflare Pages.
+## Host on GitHub Pages (free)
+
+1. Push the latest code (including the `.github/workflows/deploy-pages.yml` file).
+2. On GitHub: open your repo → **Settings** → **Pages**.
+3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+4. After the next push to `main`, the workflow will build and deploy. Your site will be at:
+   **https://bryar1aiq.github.io/bisk-religion-trivia-secondary/**
+
+## Other free hosting
+
+- **Netlify:** [netlify.com](https://netlify.com) → Add new site → Import from Git → choose this repo. Build command: `npm run build`, publish directory: `dist`.
+- **Vercel:** [vercel.com](https://vercel.com) → New Project → Import this repo. Same build/publish settings.
